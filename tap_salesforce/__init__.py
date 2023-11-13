@@ -68,6 +68,22 @@ def get_replication_key(sobject_name, fields):
         return 'LoginTime'
     return None
 
+def get_deleted_key(sobject_name, fields):
+    fields_list = [f['name'] for f in fields]
+
+    if 'IsDeleted' in fields_list:
+        return 'IsDeleted'
+    else:
+        return None
+
+def get_active_key(sobject_name, fields):
+    fields_list = [f['name'] for f in fields]
+
+    if 'IsActive' in fields_list:
+        return 'IsActive'
+    else:
+        return None
+
 def stream_is_selected(mdata):
     return mdata.get((), {}).get('selected', False)
 
@@ -167,6 +183,8 @@ def do_discover(sf: Salesforce, streams: list[str]):
 
         fields = sobject_description['fields']
         replication_key = get_replication_key(sobject_name, fields)
+        deleted_key = get_deleted_key(sobject_name, fields)
+        active_key = get_active_key(sobject_name, fields)
 
         unsupported_fields = set()
         properties = {}
@@ -214,6 +232,14 @@ def do_discover(sf: Salesforce, streams: list[str]):
         if replication_key:
             mdata = metadata.write(
                 mdata, ('properties', replication_key), 'inclusion', 'automatic')
+        
+        if deleted_key:
+            mdata = metadata.write(
+                mdata, ('properties', deleted_key), 'inclusion', 'automatic')
+        
+        if active_key:
+            mdata = metadata.write(
+                mdata, ('properties', active_key), 'inclusion', 'automatic')
 
         # There are cases where compound fields are referenced by the associated
         # subfields but are not actually present in the field list
@@ -268,6 +294,16 @@ def do_discover(sf: Salesforce, streams: list[str]):
                 {
                     'replication-method': 'FULL_TABLE',
                     'reason': 'No replication keys found from the Salesforce API'})
+        
+        if deleted_key:
+            mdata = metadata.write(
+                mdata, (), 'deletion-key', deleted_key
+            )
+        
+        if active_key:
+            mdata = metadata.write(
+                mdata, (), 'is-active-key', active_key
+            )
 
         mdata = metadata.write(mdata, (), 'table-key-properties', key_properties)
 

@@ -1,0 +1,12 @@
+version: 1
+default_environment: dev
+project_id: 1f85f7dc-2b63-4d0b-9376-029f442bf67b
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-salesforce
+    variant: meltanolabs
+    pip_url: -e .

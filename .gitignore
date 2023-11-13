@@ -99,3 +99,7 @@ config.json
 .autoenv.zsh
 
 *~
+
+# meltano stuff
+output/*
+.meltano/

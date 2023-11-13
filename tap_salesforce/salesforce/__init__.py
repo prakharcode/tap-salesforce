@@ -336,6 +336,8 @@ class Salesforce():
 
         catalog_metadata = metadata.to_map(catalog_entry['metadata'])
         replication_key = catalog_metadata.get((), {}).get('replication-key')
+        deleted_key = catalog_metadata.get((), {}).get('deletion-key')
+        active_key = catalog_metadata.get((), {}).get('is-active-key')
 
         if replication_key:
             where_clause = " WHERE {} >= {} ".format(
@@ -345,13 +347,30 @@ class Salesforce():
                 end_date_clause = " AND {} < {}".format(replication_key, end_date)
             else:
                 end_date_clause = ""
+            
+            if deleted_key:
+                where_clause += " AND ({0}=true or {0}=false)".format(deleted_key)
+            
+            if active_key:
+                where_clause += " AND ({0}=true or {0}=false)".format(active_key)
 
             order_by = " ORDER BY {} ASC".format(replication_key)
             if order_by_clause:
+                logging.info(f"Query {query + where_clause + end_date_clause + order_by}")
                 return query + where_clause + end_date_clause + order_by
-
+            logging.info(f"Query {query + where_clause + end_date_clause}")
             return query + where_clause + end_date_clause
+
         else:
+            if deleted_key:
+                where_clause = " WHERE ({0}=true or {0}=false)".format(deleted_key)
+                logging.info(f"Query {query + where_clause}")
+                return query + where_clause
+            if active_key:
+                where_clause = " WHERE ({0}=true or {0}=false)".format(active_key)
+                logging.info(f"Query {query + where_clause}")
+                return query + where_clause
+            logging.info(f"Query {query}")
             return query
 
     def query(self, catalog_entry, state):
