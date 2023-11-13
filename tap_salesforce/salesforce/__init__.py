@@ -356,21 +356,16 @@ class Salesforce():
 
             order_by = " ORDER BY {} ASC".format(replication_key)
             if order_by_clause:
-                logging.info(f"Query {query + where_clause + end_date_clause + order_by}")
                 return query + where_clause + end_date_clause + order_by
-            logging.info(f"Query {query + where_clause + end_date_clause}")
             return query + where_clause + end_date_clause
 
         else:
             if deleted_key:
                 where_clause = " WHERE ({0}=true or {0}=false)".format(deleted_key)
-                logging.info(f"Query {query + where_clause}")
                 return query + where_clause
             if active_key:
                 where_clause = " WHERE ({0}=true or {0}=false)".format(active_key)
-                logging.info(f"Query {query + where_clause}")
                 return query + where_clause
-            logging.info(f"Query {query}")
             return query
 
     def query(self, catalog_entry, state):
