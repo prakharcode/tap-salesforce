@@ -16,15 +16,15 @@ plugins:
     - properties
     - state
     settings:
-      - username
-      - password
-      - security_token
-      - client_id
-      - client_secret
-      - refresh_token
-      - start_date
-      - is_sandbox
-      - api_type
-      - select_fields_by_default
-      - state_message_threshold
-      - max_workers
+    - username
+    - password
+    - security_token
+    - client_id
+    - client_secret
+    - refresh_token
+    - start_date
+    - is_sandbox
+    - api_type
+    - select_fields_by_default
+    - state_message_threshold
+    - max_workers
