@@ -28,3 +28,4 @@ plugins:
     - name: select_fields_by_default
     - name: state_message_threshold
     - name: max_workers
+    - name: streams_to_discover
