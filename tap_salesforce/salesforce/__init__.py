@@ -180,7 +180,8 @@ def field_to_property_schema(field, mdata):
         return property_schema, mdata
     elif sf_type == 'location':
         # geo coordinates are numbers or objects divided into two fields for lat/long
-        property_schema['type'] = ["number", "object", "null"]
+        # property_schema['type'] = ["number", "object", "null"]
+        property_schema['type'] = ["object", "null"]
         property_schema['properties'] = {
             "longitude": {"type": ["null", "number"]},
             "latitude": {"type": ["null", "number"]}
